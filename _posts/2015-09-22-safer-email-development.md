@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Safer Email Development
+title: Safer Email Development With MailCatcher
 ---
 
 Having worked on a number of applications which send lots of emails to customers, one thing that has always concerned me is the risk of accidentally sending emails to customers.
