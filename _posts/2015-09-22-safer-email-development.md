@@ -7,7 +7,9 @@ Having worked on a number of applications which send lots of emails to customers
 
 After a quick search I came across a great little gem called [MailCatcher](http://mailcatcher.me).
 
-Mailcatcher creates a local SMTP server which can be used for development purposes by storing emails sent to it in memory and displays them in a web interface. This means I can use the same code for both development and production, and be confident that emails are not actually being sent beyond my local machine.
+Mailcatcher creates a local SMTP server which can be used for development purposes. It simply stores emails in memory and displays them in a web interface, which is great for testing email delivery and content.
+
+The benefit of using a local SMTP server instead of having a test mode redirecting emails to a different address is that there are no code differences between development and production. I can also be confident that while developing email related code on my machine that I'm not about to accidentally send emails out.
 
 ## Prerequisites
 
