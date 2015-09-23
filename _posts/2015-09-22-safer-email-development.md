@@ -20,7 +20,7 @@ To use MailCatcher you must have ruby installed.
 You can find instructions for installing Ruby on Linux at  https://www.ruby-lang.org/en/documentation/installation.
 ### Windows
 
-* Installing Ruby on Windows is thankfully a simple task thanks to [Ruby Installer](http://rubyinstaller.org). You will need to use the Ruby Installer and also install the Ruby Development Kit (see the [download page](http://rubyinstaller.org/downloads) for information).
+Installing Ruby on Windows is thankfully a simple task thanks to [Ruby Installer](http://rubyinstaller.org). You will need to use the Ruby Installer and also install the Ruby Development Kit (see the [download page](http://rubyinstaller.org/downloads) for information).
 
 ## How to install MailCatcher
 
