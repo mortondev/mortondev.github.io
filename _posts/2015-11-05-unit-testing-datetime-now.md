@@ -3,7 +3,7 @@ layout: post
 title: Unit Testing with NodaTime
 ---
 
-When trying to test code which uses DateTime.Now, it can be challenging to test time-based scenarios as by default your stuck with the current system time. Ideally we want to be able to be able to change the current time to give us more freedom when testing.
+When trying to test code which uses DateTime.Now, it can be challenging to test time-based scenarios as by default your stuck with the current system time. Ideally we want to be able to change the current time to give us more freedom when testing.
 
 My solution to testing the current time involves injecting an IClock interface into the classes that require DateTime.Now. By doing this it becomes a simple case of mocking the interface to return whatever time you require, allowing you simulate time-based scenarios.
 
