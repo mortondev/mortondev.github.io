@@ -7,7 +7,7 @@ When trying to test code which uses DateTime.Now, it can be challenging to test 
 
 My solution to testing the current time involves injecting an IClock interface into the classes that require DateTime.Now. By doing this it becomes a simple case of mocking the interface to return whatever time you require, allowing you simulate time-based scenarios.
 
-## Testing With NodaTime
+## Setting up NodaTime
 
 Instead of reinventing the wheel we're going to use [NodaTime](http://nodatime.org), a mature library which offers an alternative to the standard date and time API offered by .NET.
 
