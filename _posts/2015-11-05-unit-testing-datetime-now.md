@@ -58,7 +58,7 @@ public class WidgetFactoryTests {
     var widgetFactory = new WidgetFactory(clock);
     var widget = widgetFactory.Create();
 
-    Assert.AreEqual(new DateTime(2015, 1, 1), widget.CreatedOn);
+    Assert.AreEqual(new DateTime(2015, 1, 1, 0, 0, DateTimeKind.Utc), widget.CreatedOn);
   }
 }
 ```
