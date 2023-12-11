@@ -47,5 +47,14 @@
     </div>
 
     {% include analytics.html %}
+    <script>
+      var script = document.createElement("script");
+      script.async = true;
+      script.src = "https://www.quackback.io/widget/quackback.js";
+      script.onload = function() { 
+        new FeedbackWidget({ appId: "n13ul2rs39q4"});
+      };
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>
