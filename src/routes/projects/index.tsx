@@ -9,6 +9,13 @@ import { Badge } from '@/components/ui/badge'
 
 const projects = [
   {
+    title: 'Quackback',
+    description:
+      'Open-source feedback platform for teams that ship. The alternative to Canny, UserVoice, and Productboard. Collect feedback, prioritize what matters, close the loop.',
+    tags: ['TanStack Start', 'PostgreSQL', 'Drizzle', 'BullMQ', 'Bun'],
+    url: 'https://github.com/QuackbackIO/quackback',
+  },
+  {
     title: 'mortondev.com',
     description:
       'Personal dev blog and portfolio built with TanStack Start, shadcn/ui, and Tailwind CSS.',
