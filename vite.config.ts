@@ -6,11 +6,13 @@ import mdx from '@mdx-js/rollup'
 import remarkFrontmatter from 'remark-frontmatter'
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import rehypeShiki from '@shikijs/rehype'
+import tailwindcss from '@tailwindcss/vite'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
+    tailwindcss(),
     tanstackStart(),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
