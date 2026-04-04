@@ -7,6 +7,10 @@ import {
   Scripts,
 } from '@tanstack/react-router'
 import appCss from '@/styles/globals.css?url'
+import { ThemeProvider } from '@/components/theme-provider'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
+import { NotFound } from '@/components/not-found'
 
 export const Route = createRootRoute({
   head: () => ({
@@ -22,13 +26,16 @@ export const Route = createRootRoute({
     links: [{ rel: 'stylesheet', href: appCss }],
   }),
   component: RootComponent,
+  notFoundComponent: () => <NotFound />,
 })
 
 function RootComponent() {
   return (
-    <RootDocument>
-      <Outlet />
-    </RootDocument>
+    <ThemeProvider>
+      <RootDocument>
+        <Outlet />
+      </RootDocument>
+    </ThemeProvider>
   )
 }
 
@@ -45,11 +52,13 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <div className="relative flex min-h-screen flex-col">
+          <SiteHeader />
           <main className="flex-1">
             <div className="container max-w-screen-md py-8 px-4 mx-auto">
               {children}
             </div>
           </main>
+          <SiteFooter />
         </div>
         <Scripts />
       </body>
