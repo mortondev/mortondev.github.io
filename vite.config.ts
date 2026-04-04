@@ -11,13 +11,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
-    tanstackStart({
-      prerender: {
-        enabled: true,
-        crawlLinks: true,
-        autoSubfolderIndex: true,
-      },
-    }),
+    tanstackStart(),
     mdx({
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
       rehypePlugins: [
@@ -25,6 +19,6 @@ export default defineConfig({
       ],
     }),
     viteReact({ include: /\.(mdx|js|jsx|ts|tsx)$/ }),
-    nitro({ preset: 'static' }),
+    nitro(),
   ],
 })
