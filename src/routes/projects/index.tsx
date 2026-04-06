@@ -1,10 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { ExternalLink, Code2 } from 'lucide-react'
 
 const projects = [
@@ -39,55 +33,54 @@ export const Route = createFileRoute('/projects/')({
 
 function Projects() {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-        <p className="text-muted-foreground">Things I've built.</p>
+    <div className="space-y-16">
+      <div>
+        <h1 className="text-xl font-semibold">Projects</h1>
+        <p className="mt-1.5 text-[0.935rem] text-muted-foreground">
+          Things I've built.
+        </p>
       </div>
-      <div className="grid gap-4">
+
+      <div className="space-y-6">
         {projects.map((project) => (
-          <Card
+          <div
             key={project.title}
-            className="hover:bg-muted/50 transition-colors"
+            className="group rounded-xl border border-border/60 bg-card p-5 transition-colors hover:border-border hover:bg-muted/30"
           >
-            <CardHeader>
-              <div className="flex items-center gap-4">
-                {'logo' in project && project.logo ? (
-                  <img
-                    src={project.logo}
-                    alt={`${project.title} logo`}
-                    className="h-12 w-12 rounded-lg"
-                  />
-                ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
-                    <Code2 className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                )}
-                <div>
-                  <CardTitle className="text-xl">{project.title}</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {project.description}
-                  </p>
+            <div className="flex items-start gap-4">
+              {project.logo ? (
+                <img
+                  src={project.logo}
+                  alt={`${project.title} logo`}
+                  className="h-10 w-10 rounded-lg"
+                />
+              ) : (
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                  <Code2 className="h-5 w-5 text-muted-foreground" />
+                </div>
+              )}
+              <div className="min-w-0 flex-1">
+                <h2 className="font-semibold leading-snug">{project.title}</h2>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                  {project.description}
+                </p>
+                <div className="mt-3 flex gap-4">
+                  {project.links.map((link) => (
+                    <a
+                      key={link.label}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      {link.label}
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  ))}
                 </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-4">
-                {project.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-                  >
-                    {link.label}
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     </div>

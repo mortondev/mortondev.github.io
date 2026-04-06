@@ -9,62 +9,65 @@ function Home() {
   const posts = getAllPosts()
 
   return (
-    <div className="space-y-12">
-      <div className="flex items-center gap-5">
+    <div className="space-y-16">
+      <div className="flex items-start gap-5">
         <img
           src="/images/mortondev-avatar.png"
           alt="James Morton"
-          className="h-16 w-16 rounded-full"
+          className="h-14 w-14 rounded-full ring-1 ring-border"
         />
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">James Morton</h1>
-          <p className="text-muted-foreground">
-            Software Developer from Nottinghamshire, UK.
+        <div className="space-y-1.5">
+          <h1 className="text-xl font-semibold">James Morton</h1>
+          <p className="text-[0.935rem] leading-relaxed text-muted-foreground">
+            Software developer from Nottinghamshire, UK.{' '}
+            <br className="hidden sm:block" />
             Building{' '}
             <a
               href="https://quackback.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground underline underline-offset-4 decoration-muted-foreground/40 hover:decoration-foreground transition-colors"
+              className="font-medium text-foreground underline decoration-border underline-offset-[3px] hover:decoration-foreground/40 transition-colors"
             >
               Quackback
             </a>
-            .
+            , an open-source feedback platform.
           </p>
         </div>
       </div>
 
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold tracking-tight mb-4">Posts</h2>
-        <div className="divide-y divide-border">
+      <section>
+        <h2 className="text-xs font-medium uppercase tracking-widest text-muted-foreground mb-6">
+          Writing
+        </h2>
+        <div className="space-y-0">
           {posts.map((post) => (
             <Link
               key={post.slug}
               to="/blog/$slug"
               params={{ slug: post.slug }}
-              className="group block py-4 -mx-3 px-3 rounded-lg hover:bg-muted/50 transition-colors"
+              className="group -mx-3 flex items-baseline justify-between gap-4 rounded-lg px-3 py-3.5 transition-colors hover:bg-muted/60"
             >
-              <div className="flex items-baseline justify-between gap-4">
-                <h3 className="font-medium group-hover:text-foreground transition-colors">
+              <div className="min-w-0">
+                <h3 className="text-[0.935rem] font-medium leading-snug">
                   {post.title}
                 </h3>
-                <time
-                  dateTime={post.date}
-                  className="text-sm text-muted-foreground shrink-0"
-                >
-                  {new Date(post.date).toLocaleDateString('en-GB', {
-                    year: 'numeric',
-                    month: 'short',
-                  })}
-                </time>
+                <p className="mt-1 text-sm leading-normal text-muted-foreground line-clamp-1">
+                  {post.description}
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {post.description}
-              </p>
+              <time
+                dateTime={post.date}
+                className="shrink-0 text-sm tabular-nums text-muted-foreground"
+              >
+                {new Date(post.date).toLocaleDateString('en-GB', {
+                  year: 'numeric',
+                  month: 'short',
+                })}
+              </time>
             </Link>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   )
 }

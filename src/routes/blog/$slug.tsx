@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { getPost } from '@/lib/posts'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
 import { NotFound } from '@/components/not-found'
 import { ArrowLeft } from 'lucide-react'
 
@@ -18,35 +16,44 @@ function BlogPost() {
   const { Component, title, date, tags } = post
 
   return (
-    <article className="py-2">
+    <article>
       <Link
         to="/"
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        className="group mb-10 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
-        <ArrowLeft className="mr-1 h-4 w-4" />
-        Back to blog
+        <ArrowLeft className="mr-1.5 h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+        Back
       </Link>
-      <div className="space-y-2 mb-4">
-        <time dateTime={date} className="text-sm text-muted-foreground">
+
+      <header className="mb-10">
+        <time
+          dateTime={date}
+          className="text-sm text-muted-foreground"
+        >
           {new Date(date).toLocaleDateString('en-GB', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
           })}
         </time>
-        <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+        <h1 className="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
+          {title}
+        </h1>
         {tags && tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="mt-4 flex flex-wrap gap-2">
             {tags.map((tag) => (
-              <Badge key={tag} variant="secondary">
+              <span
+                key={tag}
+                className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+              >
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
         )}
-      </div>
-      <Separator className="my-6" />
-      <div className="prose dark:prose-invert max-w-none">
+      </header>
+
+      <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-p:leading-relaxed prose-a:font-medium prose-a:underline prose-a:decoration-border prose-a:underline-offset-[3px] hover:prose-a:decoration-foreground/40 prose-pre:bg-muted prose-pre:text-foreground">
         <Component />
       </div>
     </article>

@@ -23,7 +23,15 @@ export const Route = createRootRoute({
         content: 'Software Developer from Nottinghamshire, UK',
       },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossOrigin: 'anonymous',
+      },
+      { rel: 'stylesheet', href: appCss },
+    ],
   }),
   component: RootComponent,
   notFoundComponent: () => <NotFound />,
@@ -54,7 +62,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <div className="relative flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">
-            <div className="container max-w-screen-md py-8 px-4 mx-auto">
+            <div className="mx-auto max-w-2xl px-6 py-12 sm:py-16">
               {children}
             </div>
           </main>
