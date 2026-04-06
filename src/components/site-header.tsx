@@ -21,12 +21,6 @@ export function SiteHeader() {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link
-              to="/"
-              className="transition-colors hover:text-foreground/80 text-foreground/60 [&.active]:text-foreground"
-            >
-              Blog
-            </Link>
-            <Link
               to="/projects"
               className="transition-colors hover:text-foreground/80 text-foreground/60 [&.active]:text-foreground"
             >
