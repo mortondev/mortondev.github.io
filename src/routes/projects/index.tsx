@@ -1,88 +1,70 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ExternalLink, Code2 } from 'lucide-react'
-
-const projects = [
-  {
-    title: 'Quackback',
-    description:
-      'Open-source feedback platform for teams that ship. The alternative to Canny, UserVoice, and Productboard.',
-    logo: '/images/quackback-logo.svg',
-    links: [
-      { label: 'Website', href: 'https://quackback.io' },
-      { label: 'GitHub', href: 'https://github.com/QuackbackIO/quackback' },
-    ],
-  },
-  {
-    title: 'mortondev.com',
-    description:
-      'Personal dev blog and portfolio built with TanStack Start, shadcn/ui, and Tailwind CSS.',
-    logo: '/images/mortondev-avatar.png',
-    links: [
-      { label: 'Website', href: 'https://mortondev.com' },
-      {
-        label: 'GitHub',
-        href: 'https://github.com/mortondev/mortondev.github.io',
-      },
-    ],
-  },
-]
+import { getSiteData, useLiveSiteData } from '@/lib/github'
+import { seo } from '@/lib/seo'
 
 export const Route = createFileRoute('/projects/')({
+  loader: () => getSiteData(),
+  head: () => seo({ title: 'Projects', path: '/projects/', description: 'Quackback and other things James Morton has built.' }),
   component: Projects,
 })
 
-function Projects() {
-  return (
-    <div className="space-y-16">
-      <div>
-        <h1 className="text-xl font-semibold">Projects</h1>
-        <p className="mt-1.5 text-[0.935rem] text-muted-foreground">
-          Things I've built.
-        </p>
-      </div>
+const ext = { target: '_blank', rel: 'noopener' } as const
 
-      <div className="space-y-6">
-        {projects.map((project) => (
-          <div
-            key={project.title}
-            className="group rounded-xl border border-border/60 bg-card p-5 transition-colors hover:border-border hover:bg-muted/30"
-          >
-            <div className="flex items-start gap-4">
-              {project.logo ? (
-                <img
-                  src={project.logo}
-                  alt={`${project.title} logo`}
-                  className="h-10 w-10 rounded-lg"
-                />
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-                  <Code2 className="h-5 w-5 text-muted-foreground" />
-                </div>
-              )}
-              <div className="min-w-0 flex-1">
-                <h2 className="font-semibold leading-snug">{project.title}</h2>
-                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                  {project.description}
-                </p>
-                <div className="mt-3 flex gap-4">
-                  {project.links.map((link) => (
-                    <a
-                      key={link.label}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+const parts = [
+  { name: 'quackback', note: 'the main app, built with TypeScript, TanStack Start and PostgreSQL', href: 'https://github.com/QuackbackIO/quackback' },
+  { name: 'quackback-ios', note: 'Swift SDK for in-app feedback', href: 'https://github.com/QuackbackIO/quackback-ios' },
+  { name: 'quackback-android', note: 'Kotlin SDK for in-app feedback', href: 'https://github.com/QuackbackIO/quackback-android' },
+  { name: 'skills', note: 'agent skills for installing the widget and identifying users', href: 'https://github.com/QuackbackIO/skills' },
+  { name: 'MCP server', note: 'lets AI agents search and triage feedback', href: 'https://quackback.io/docs/mcp' },
+]
+
+function Projects() {
+  const { stats } = useLiveSiteData(Route.useLoaderData())
+
+  return (
+    <>
+      <h1 className="pt-10 text-[1.4rem] font-semibold">Projects</h1>
+
+      <section className="mt-8" aria-labelledby="qb">
+        <h2 id="qb" className="h2">
+          <a href="https://quackback.io" className="a" {...ext}>Quackback</a>
+          <span className="ml-2 font-normal text-ink-3">2025 to now</span>
+        </h2>
+        <p className="mt-2 text-ink-2">
+          An open-source customer feedback platform: boards for feature requests, a public roadmap, a changelog and a
+          help centre. Teams can use the hosted version or run it themselves. {stats.stars.toLocaleString('en-GB')}{' '}
+          stars, {stats.forks.toLocaleString('en-GB')} forks, latest release {stats.release}.
+        </p>
+        <img
+          src="/images/quackback-screenshot.webp"
+          alt="Quackback’s public feedback portal, listing feature requests with vote counts"
+          width={960}
+          height={617}
+          loading="lazy"
+          className="mt-6 w-full rounded-md"
+        />
+        <ul className="mt-6 space-y-1.5">
+          {parts.map((p) => (
+            <li key={p.name}>
+              <a href={p.href} className="a font-mono text-[0.92rem]" {...ext}>
+                {p.name}
+              </a>
+              <span className="text-ink-2">: {p.note}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="mt-12" aria-labelledby="site">
+        <h2 id="site" className="h2">
+          <a href="https://github.com/mortondev/mortondev.github.io" className="a" {...ext}>mortondev.com</a>
+          <span className="ml-2 font-normal text-ink-3">since 2015</span>
+        </h2>
+        <p className="mt-2 text-ink-2">
+          This site. It started on Jekyll; now it’s TanStack Start, prerendered to static HTML and deployed to GitHub
+          Pages. The Quackback numbers are pulled from GitHub on each deploy.
+        </p>
+      </section>
+    </>
   )
 }

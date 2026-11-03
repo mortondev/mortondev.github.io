@@ -1,14 +1,15 @@
 import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
 
 export function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center py-20 text-center">
-      <h1 className="text-4xl font-bold mb-2">404</h1>
-      <p className="text-muted-foreground mb-6">Page not found.</p>
-      <Button asChild>
-        <Link to="/">Go home</Link>
-      </Button>
+    <div className="pt-10">
+      <h1 className="text-[1.4rem] font-semibold">Page not found</h1>
+      <p className="mt-2 text-ink-2">
+        There’s nothing at this address. If you followed a link from somewhere, it may be out of date.
+      </p>
+      <p className="mt-4">
+        <Link to="/" className="a">Go to the homepage</Link>
+      </p>
     </div>
   )
 }
