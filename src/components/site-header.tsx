@@ -1,57 +1,48 @@
 import { Link } from '@tanstack/react-router'
-import { useTheme } from '@/components/theme-provider'
-import { Button } from '@/components/ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Moon, Sun, Monitor } from 'lucide-react'
+import { nav, site } from '@/data/site'
+
+function toggleTheme() {
+  const root = document.documentElement
+  const next = root.dataset.theme === 'dark' ? 'light' : 'dark'
+  root.dataset.theme = next
+  try {
+    localStorage.setItem('theme', next)
+  } catch {}
+}
 
 export function SiteHeader() {
-  const { setTheme } = useTheme()
-
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-6">
-        <div className="flex items-center gap-8">
-          <Link to="/" className="text-sm font-semibold tracking-tight">
-            James Morton
+    <header className="mx-auto flex w-full max-w-[40rem] items-baseline justify-between gap-4 px-5 pt-8 pb-4">
+      <Link to="/" className="font-semibold whitespace-nowrap text-ink hover:text-link">
+        {site.name}
+      </Link>
+      <nav aria-label="Primary" className="flex items-baseline gap-4 text-[0.95rem] sm:gap-5">
+        {nav.map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className="text-ink-2 hover:text-link"
+            activeProps={{ className: 'text-ink underline decoration-rule-strong underline-offset-[0.3em]', 'aria-current': 'page' }}
+          >
+            {item.label}
           </Link>
-          <nav className="flex items-center gap-6">
-            <Link
-              to="/projects"
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground [&.active]:text-foreground"
-            >
-              Projects
-            </Link>
-          </nav>
-        </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-8 w-8">
-              <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setTheme('light')}>
-              <Sun className="mr-2 h-4 w-4" />
-              Light
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme('dark')}>
-              <Moon className="mr-2 h-4 w-4" />
-              Dark
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setTheme('system')}>
-              <Monitor className="mr-2 h-4 w-4" />
-              System
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+        ))}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="text-ink-3 hover:text-ink"
+          aria-label="Switch between light and dark"
+          title="Switch between light and dark"
+        >
+          <svg className="size-4 translate-y-[2px] dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+          </svg>
+          <svg className="hidden size-4 translate-y-[2px] dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </svg>
+        </button>
+      </nav>
     </header>
   )
 }

@@ -1,49 +1,59 @@
-import type { ComponentType } from 'react'
+import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 
-interface PostModule {
-  default: ComponentType
-  frontmatter: {
-    title: string
-    date: string
-    description: string
-    tags?: string[]
-  }
+export interface Frontmatter {
+  title: string
+  description: string
+  date: string
+  updated?: string
+  tags?: string[]
+  draft?: boolean
+  readingTime: number
 }
 
-const modules = import.meta.glob<PostModule>('../content/blog/*.mdx', {
+export interface PostMeta extends Frontmatter {
+  slug: string
+}
+
+// Frontmatter is tiny, so it's bundled eagerly for lists and RSS.
+const frontmatter = import.meta.glob<Frontmatter>('../content/blog/*.mdx', {
   eager: true,
+  import: 'frontmatter',
 })
 
-export interface PostMeta {
-  slug: string
-  title: string
-  date: string
-  description: string
-  tags?: string[]
+// Post bodies are code-split: one chunk per post, loaded on demand.
+const bodies = import.meta.glob<{ default: ComponentType }>('../content/blog/*.mdx')
+
+const slugOf = (path: string) => path.slice(path.lastIndexOf('/') + 1, -'.mdx'.length)
+const pathOf = (slug: string) => `../content/blog/${slug}.mdx`
+
+const all: PostMeta[] = Object.entries(frontmatter)
+  .map(([path, fm]) => ({ ...fm, slug: slugOf(path) }))
+  .filter((p) => import.meta.env.DEV || !p.draft)
+  .sort((a, b) => b.date.localeCompare(a.date))
+
+export const getPosts = () => all
+export const getPostMeta = (slug: string) => all.find((p) => p.slug === slug)
+
+export function getAdjacent(slug: string) {
+  const i = all.findIndex((p) => p.slug === slug)
+  return { newer: i > 0 ? all[i - 1] : undefined, older: i >= 0 ? all[i + 1] : undefined }
 }
 
-export interface Post extends PostMeta {
-  Component: ComponentType
+/** Warm the post's chunk (called from the route loader during navigation). */
+export function preloadPost(slug: string) {
+  return bodies[pathOf(slug)]?.()
 }
 
-export function getAllPosts(): PostMeta[] {
-  return Object.entries(modules)
-    .map(([path, mod]) => ({
-      slug: path.split('/').pop()!.replace('.mdx', ''),
-      ...mod.frontmatter,
-    }))
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+const lazyCache = new Map<string, LazyExoticComponent<ComponentType>>()
+export function getPostComponent(slug: string) {
+  const load = bodies[pathOf(slug)]
+  if (!load) return undefined
+  if (!lazyCache.has(slug)) lazyCache.set(slug, lazy(load))
+  return lazyCache.get(slug)!
 }
 
-export function getPost(slug: string): Post | null {
-  const entry = Object.entries(modules).find(([path]) =>
-    path.endsWith(`/${slug}.mdx`),
-  )
-  if (!entry) return null
-  const [, mod] = entry
-  return {
-    slug,
-    Component: mod.default,
-    ...mod.frontmatter,
-  }
+export const formatDate = {
+  long: (iso: string) =>
+    new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+  year: (iso: string) => iso.slice(0, 4),
 }

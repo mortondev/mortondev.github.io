@@ -1,13 +1,16 @@
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
+import { NotFound } from '@/components/not-found'
 
 export function getRouter() {
-  const router = createRouter({
+  return createRouter({
     routeTree,
+    // GitHub Pages serves /path/index.html, so canonical URLs end in a slash.
+    trailingSlash: 'always',
     scrollRestoration: true,
+    defaultPreload: 'intent',
+    defaultNotFoundComponent: NotFound,
   })
-
-  return router
 }
 
 declare module '@tanstack/react-router' {

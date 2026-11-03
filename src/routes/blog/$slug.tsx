@@ -1,61 +1,76 @@
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { getPost } from '@/lib/posts'
-import { NotFound } from '@/components/not-found'
-import { ArrowLeft } from 'lucide-react'
+import { Suspense } from 'react'
+import { createFileRoute, Link, notFound } from '@tanstack/react-router'
+import { formatDate, getAdjacent, getPostComponent, getPostMeta, preloadPost } from '@/lib/posts'
+import { seo } from '@/lib/seo'
 
 export const Route = createFileRoute('/blog/$slug')({
+  loader: async ({ params }) => {
+    const post = getPostMeta(params.slug)
+    if (!post) throw notFound()
+    await preloadPost(params.slug)
+    return { post }
+  },
+  head: ({ loaderData, params }) =>
+    loaderData
+      ? seo({
+          title: loaderData.post.title,
+          description: loaderData.post.description,
+          path: `/blog/${params.slug}/`,
+          type: 'article',
+          published: loaderData.post.date,
+        })
+      : {},
   component: BlogPost,
 })
 
+const STALE_AFTER_YEARS = 5
+
 function BlogPost() {
-  const { slug } = Route.useParams()
-  const post = getPost(slug)
-
-  if (!post) return <NotFound />
-
-  const { Component, title, date, tags } = post
+  const { post } = Route.useLoaderData()
+  const Body = getPostComponent(post.slug)!
+  const { newer, older } = getAdjacent(post.slug)
+  const age = new Date().getUTCFullYear() - Number(post.date.slice(0, 4))
 
   return (
-    <article>
-      <Link
-        to="/"
-        className="group mb-10 inline-flex items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="mr-1.5 h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-        Back
-      </Link>
-
-      <header className="mb-10">
-        <time
-          dateTime={date}
-          className="text-sm text-muted-foreground"
-        >
-          {new Date(date).toLocaleDateString('en-GB', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
-        <h1 className="mt-2 text-3xl font-bold leading-tight sm:text-4xl">
-          {title}
-        </h1>
-        {tags && tags.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {tags.map((tag) => (
-              <span
-                key={tag}
-                className="rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
+    <article className="pt-10">
+      <header>
+        <h1 className="text-[1.75rem] leading-tight font-semibold sm:text-[2rem]">{post.title}</h1>
+        <p className="mt-2 text-[0.95rem] text-ink-3">
+          <time dateTime={post.date}>{formatDate.long(post.date)}</time> · {post.readingTime} min read
+          {post.tags && post.tags.length > 0 && <> · {post.tags.join(', ')}</>}
+        </p>
       </header>
 
-      <div className="prose prose-neutral dark:prose-invert max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-p:leading-relaxed prose-a:font-medium prose-a:underline prose-a:decoration-border prose-a:underline-offset-[3px] hover:prose-a:decoration-foreground/40 prose-pre:bg-muted prose-pre:text-foreground">
-        <Component />
+      {age >= STALE_AFTER_YEARS && (
+        <p className="mt-6 border-l-2 border-rule-strong pl-4 text-[0.95rem] text-ink-2 italic">
+          I wrote this in {post.date.slice(0, 4)}. The idea still holds, but the tools and versions have moved on.
+        </p>
+      )}
+
+      <div className="prose mt-8 max-w-none">
+        <Suspense fallback={null}>
+          <Body />
+        </Suspense>
       </div>
+
+      {(newer || older) && (
+        <nav aria-label="More writing" className="mt-14 flex flex-col justify-between gap-3 border-t border-rule pt-6 text-[0.95rem] sm:flex-row">
+          {older ? (
+            <span>
+              <span className="text-ink-3">Older: </span>
+              <Link to="/blog/$slug/" params={{ slug: older.slug }} className="a">{older.title}</Link>
+            </span>
+          ) : (
+            <span />
+          )}
+          {newer && (
+            <span className="sm:text-right">
+              <span className="text-ink-3">Newer: </span>
+              <Link to="/blog/$slug/" params={{ slug: newer.slug }} className="a">{newer.title}</Link>
+            </span>
+          )}
+        </nav>
+      )}
     </article>
   )
 }
